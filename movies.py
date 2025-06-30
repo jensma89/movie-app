@@ -7,6 +7,7 @@ from the movie_storage module.
 import sys
 import movie_logic as ml
 from colorama import Fore, Style
+import movie_storage_sql as storage
 
 # colors (colorama):
 # Title & Goodbye = YELLOW

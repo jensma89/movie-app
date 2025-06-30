@@ -9,12 +9,8 @@ import statistics
 import matplotlib.pyplot as plt
 from rapidfuzz import process, fuzz
 from colorama import Fore, Style
-from movie_storage import (
-    get_movies,
-    add_movie,
-    delete_movie,
-    update_movie,
-)
+import movie_storage_sql as storage
+
 # colors (colorama):
 # Title & Goodbye = YELLOW
 # Ask for user input = LIGHTGREEN_EX
@@ -25,7 +21,7 @@ from movie_storage import (
 def get_movie_list():
     """Iterates through the movie data
     and print out a list of movies with rating and release year"""
-    movies = get_movies()
+    movies = storage.list_movies()
     print(f"{Fore.CYAN}{len(movies)} movies in total")
     for movie in movies:
         title = movie['title']
@@ -41,7 +37,6 @@ def get_movie_list():
 def prompt_add_movie():
     """Prompts the user to add a movie
     and checks if the movie still exists."""
-    movies = get_movies()
     title = input(f"{Fore.LIGHTGREEN_EX}Enter a new movie name:"
                   f" {Style.RESET_ALL}").strip()
     if not title:
@@ -49,8 +44,11 @@ def prompt_add_movie():
               f"{Style.RESET_ALL}")
         return
 
+    movies = storage.list_movies()
+
     for movie in movies:
-        if isinstance(movie, dict) and movie.get('title', '').lower() == title.lower():
+        if (isinstance(movie, dict)
+                and movie.get('title', '').lower() == title.lower()):
             print(f"{Fore.RED}Movie already exists.{Style.RESET_ALL}")
             return
 
@@ -62,15 +60,16 @@ def prompt_add_movie():
                              f"is invalid! Rating must be between 0 and 10."
                              f"{Style.RESET_ALL}")
     except ValueError as e:
-            print((f"{Fore.RED}Invalid rating: {e} "
-                   f"{Style.RESET_ALL}"))
-            input(f"{Fore.LIGHTGREEN_EX}\nPress Enter to continue"
-                  f"{Style.RESET_ALL}")
-            return
+        print((f"{Fore.RED}Invalid rating: {e} "
+               f"{Style.RESET_ALL}"))
+        input(f"{Fore.LIGHTGREEN_EX}\nPress Enter to continue"
+              f"{Style.RESET_ALL}")
+        return
 
     year = input(f"{Fore.LIGHTGREEN_EX}Enter a year of release: "
                  f"{Style.RESET_ALL}")
-    add_movie(title, rating, year)
+
+    storage.add_movie(title, rating, year)
     print(f"{Fore.CYAN}Movie: {title} ({rating},"
           f" {year}) successfully added{Style.RESET_ALL}")
 
@@ -88,7 +87,7 @@ def prompt_delete_movie():
               f"{Style.RESET_ALL}")
         return
 
-    was_deleted = delete_movie(title)
+    was_deleted = storage.delete_movie(title)
 
     if was_deleted:
         print(f"{Fore.CYAN}Movie {title} "
@@ -123,7 +122,7 @@ def prompt_update_movie():
               f"Please enter a number (0-10){Style.RESET_ALL}")
         return
 
-    was_updated = update_movie(title, rating)
+    was_updated = storage.update_movie(title, rating)
 
     if was_updated:
         print(f"{Fore.CYAN}Movie {title} "

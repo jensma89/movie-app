@@ -1,10 +1,15 @@
+"""
+movie_storage_sql.py
+This file is handling the database options.
+"""
+
 from sqlalchemy import create_engine, text
 
 # Define the database URL
 DB_URL = "sqlite:///movies.db"
 
 # Create the engine
-engine = create_engine(DB_URL, echo=False)
+engine = create_engine(DB_URL, echo=True)
 
 # Create the movies table if it does not exist
 with engine.connect() as connection:
