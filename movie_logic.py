@@ -51,26 +51,8 @@ def prompt_add_movie():
             print(f"{Fore.RED}Movie already exists.{Style.RESET_ALL}")
             return
 
-    try:
-        rating = float(input(f"{Fore.LIGHTGREEN_EX}Enter new movie rating (0-10 float):"
-                             f" {Style.RESET_ALL}"))
-        if not 0 <= rating <= 10:
-            raise ValueError(f"{Fore.RED}Rating: {rating} "
-                             f"is invalid! Rating must be between 0 and 10."
-                             f"{Style.RESET_ALL}")
-    except ValueError as e:
-        print((f"{Fore.RED}Invalid rating: {e} "
-               f"{Style.RESET_ALL}"))
-        input(f"{Fore.LIGHTGREEN_EX}\nPress Enter to continue"
-              f"{Style.RESET_ALL}")
-        return
-
-    year = input(f"{Fore.LIGHTGREEN_EX}Enter a year of release: "
-                 f"{Style.RESET_ALL}")
-
     storage.add_movie(title)
-    print(f"{Fore.CYAN}Movie: {title} ({rating},"
-          f" {year}) successfully added{Style.RESET_ALL}")
+    print(f"{Fore.CYAN}Movie successfully added{Style.RESET_ALL}")
 
     input(f"{Fore.LIGHTGREEN_EX}\nPress Enter to continue"
           f"{Style.RESET_ALL}")
