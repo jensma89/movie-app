@@ -23,10 +23,9 @@ def get_movie_list():
     and print out a list of movies with rating and release year"""
     movies = storage.list_movies()
     print(f"{Fore.CYAN}{len(movies)} movies in total")
-    for movie in movies:
-        title = movie['title']
-        rating = movie['rating']
-        year = movie['year']
+    for title, details in movies.items():
+        rating = details['rating']
+        year = details['year']
         print(f"{Fore.CYAN}Title: {title}, "
               f"rating: {rating}, "
               f"year: {year}{Style.RESET_ALL}")
