@@ -27,7 +27,7 @@ def show_menu():
     print("6. Random movie")
     print("7. Search movie")
     print("8. Movies sorted by rating")
-    print("9. Create rating histogram")
+    print("9. Generate Website")
     print("0. Exit")
 
 
@@ -67,7 +67,7 @@ def main():
         elif user_choice == "8":
             ml.sort_movies_by_rank()
         elif user_choice == "9":
-            ml.create_rating_histogram()
+            pass
         else:
             print(f"{Fore.RED}\nInvalid input, "
                   f"please try again.{Style.RESET_ALL}")

@@ -280,28 +280,3 @@ def sort_movies_by_rank():
               f"{movie['rating']}{Style.RESET_ALL}")
 
     input(f"{Fore.LIGHTGREEN_EX}\nPress Enter to continue{Style.RESET_ALL}")
-
-
-def create_rating_histogram():
-    """Ask the user for entering a filename
-    and creates a histogram file,
-    download it automatically."""
-    movies = get_movies()
-    ratings = [movie['rating'] for movie in movies]
-    choose_filename = input(f"{Fore.LIGHTGREEN_EX}Enter filename to save histogram "
-                            f"(e.g. ratings.png): {Style.RESET_ALL}").strip()
-    if not choose_filename:
-        print(f"{Fore.RED}Invalid input! Cannot be empty."
-              f"{Style.RESET_ALL}")
-        return
-
-    # define the parameters for histogram file
-    plt.hist(ratings, bins=10, range=(0, 10), edgecolor='black')
-    plt.title("Movie ratings histogram")
-    plt.xlabel("Rating")
-    plt.ylabel("Number of movies")
-    plt.grid(True)
-    plt.savefig(choose_filename)
-    plt.close()
-    print(f"{Fore.CYAN}Histogram saved as {choose_filename}{Style.RESET_ALL}")
-    input(f"{Fore.LIGHTGREEN_EX}\nPress Enter to continue{Style.RESET_ALL}")
