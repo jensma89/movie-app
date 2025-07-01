@@ -5,6 +5,7 @@ This file is handling the database options.
 
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import IntegrityError
+from movie_api import fetch_movie_by_title as fetch_movie
 
 # Define the database URL
 DB_URL = "sqlite:///movies.db"
@@ -19,7 +20,8 @@ with engine.begin() as connection:
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT UNIQUE NOT NULL,
             year INTEGER NOT NULL,
-            rating REAL NOT NULL
+            rating REAL NOT NULL,
+            poster TEXT
         )
     """))
 
@@ -40,18 +42,33 @@ def list_movies():
             for row in movies}
 
 
-def add_movie(title, year, rating):
-    """Add a new movie to the database."""
+def add_movie(title):
+    """Add a new movie from API to the database."""
+    data = fetch_movie(title)
+    if not data:    # Error movie not found
+        return
+
+    year = data.get("Year", "Unknown")
+    rating_raw = data.get("imdbRating", "N/A")
+    try:
+        rating = float(rating_raw) \
+            if rating_raw != "N/A" \
+            else None
+    except ValueError:
+        rating = None
+    poster = data.get("Poster")
+
     with engine.begin() as connection:
         try:
             connection.execute(
                 text("INSERT INTO movies "
                      "(title, year, rating) "
                      "VALUES (:title, :year, :rating)"),
-                {"title": title,
+                {"title": data.get("Title"),
                  "year": year,
-                 "rating": rating})
-            print(f"Movie '{title}' added successfully.")
+                 "rating": rating,
+                 "poster": poster})
+            print(f"Movie '{data.get("Title")}' added successfully.")
         except IntegrityError:
             print(f"Movie '{title}' already exists.")
         except Exception as e:

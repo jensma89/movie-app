@@ -68,7 +68,7 @@ def prompt_add_movie():
     year = input(f"{Fore.LIGHTGREEN_EX}Enter a year of release: "
                  f"{Style.RESET_ALL}")
 
-    storage.add_movie(title, rating, year)
+    storage.add_movie(title)
     print(f"{Fore.CYAN}Movie: {title} ({rating},"
           f" {year}) successfully added{Style.RESET_ALL}")
 
