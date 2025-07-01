@@ -4,6 +4,7 @@ This file is handling the database options.
 """
 
 from sqlalchemy import create_engine, text
+from sqlalchemy.exc import IntegrityError
 
 # Define the database URL
 DB_URL = "sqlite:///movies.db"
@@ -12,7 +13,7 @@ DB_URL = "sqlite:///movies.db"
 engine = create_engine(DB_URL, echo=True)
 
 # Create the movies table if it does not exist
-with engine.connect() as connection:
+with engine.begin() as connection:
     connection.execute(text("""
         CREATE TABLE IF NOT EXISTS movies (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -21,26 +22,27 @@ with engine.connect() as connection:
             rating REAL NOT NULL
         )
     """))
-    connection.commit()
 
 
 def list_movies():
     """Retrieve all movies from the database."""
-    with engine.connect() as connection:
+    with engine.begin() as connection:
         result = connection.execute(
             text("SELECT title, "
                  "year, "
                  "rating "
                  "FROM movies"))
-        movies = result.fetchall()
+        movies = result.mappings().all()
 
-    return {row[0]: {"year": row[1],
-                     "rating": row[2]} for row in movies}
+    return {row['title']:
+                {'year': row['year'],
+                 'rating': row['rating']}
+            for row in movies}
 
 
 def add_movie(title, year, rating):
     """Add a new movie to the database."""
-    with engine.connect() as connection:
+    with engine.begin() as connection:
         try:
             connection.execute(
                 text("INSERT INTO movies "
@@ -49,21 +51,21 @@ def add_movie(title, year, rating):
                 {"title": title,
                  "year": year,
                  "rating": rating})
-            connection.commit()
             print(f"Movie '{title}' added successfully.")
+        except IntegrityError:
+            print(f"Movie '{title}' already exists.")
         except Exception as e:
             print(f"Error: {e}")
 
 
 def delete_movie(title):
     """Delete a movie from the database."""
-    with engine.connect() as connection:
+    with engine.begin() as connection:
         result = connection.execute(
             text("DELETE FROM movies "
                  "WHERE title = :title"),
             {"title": title}
         )
-        connection.commit()
 
         if result.rowcount > 0:
             print(f"Movie '{title}' deleted successfully.")
@@ -73,13 +75,12 @@ def delete_movie(title):
 
 def update_movie(title, rating):
     """Update a movie's rating in the database."""
-    with engine.connect() as connection:
+    with engine.begin() as connection:
         result = connection.execute(
             text("UPDATE movies SET rating = :rating "
                  "WHERE title = :title"),
             {"title": title, "rating": rating}
         )
-        connection.commit()
 
         if result.rowcount > 0:
             print(f"Movie '{title}' updated successfully.")
