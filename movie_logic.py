@@ -295,7 +295,8 @@ def generate_website():
               as template_file):
             html_template = template_file.read()
     except FileNotFoundError:
-        print(f"{Fore.RED}Template file not found! {Style.RESET_ALL}")
+        print(f"{Fore.RED}Template file not found! "
+              f"{Style.RESET_ALL}")
         return
 
     # Create movie-grid
@@ -312,7 +313,6 @@ def generate_website():
                 </div>
                 <div class="movie-title">{title}</div>
                 <div class="movie-year">{info['year']}</div>
-                <div class="movie-rating">Rating: {info['rating']}</div>
             </div>
         </li>
         """
