@@ -34,13 +34,15 @@ def list_movies():
         result = connection.execute(
             text("SELECT title, "
                  "year, "
-                 "rating "
+                 "rating,"
+                 "poster "
                  "FROM movies"))
         movies = result.mappings().all()
 
     return {row['title']:
                 {'year': row['year'],
-                 'rating': row['rating']}
+                 'rating': row['rating'],
+                 'poster': row['poster']}
             for row in movies}
 
 
@@ -72,8 +74,8 @@ def add_movie(title):
         try:
             connection.execute(
                 text("INSERT INTO movies "
-                     "(title, year, rating) "
-                     "VALUES (:title, :year, :rating)"),
+                     "(title, year, rating, poster) "
+                     "VALUES (:title, :year, :rating, :poster)"),
                 {"title": data.get("Title"),
                  "year": year,
                  "rating": rating,

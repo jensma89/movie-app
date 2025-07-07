@@ -291,8 +291,8 @@ def generate_website():
 
     # Read template file
     try:
-        with (open("_static/index_template.html", "r", encoding="utf-8"))
-            as template_file:
+        with (open("_static/index_template.html", "r", encoding="utf-8")
+              as template_file):
             html_template = template_file.read()
     except FileNotFoundError:
         print(f"{Fore.RED}Template file not found! {Style.RESET_ALL}")
@@ -301,10 +301,15 @@ def generate_website():
     # Create movie-grid
     movie_grid_html = ""
     for title, info in movies.items():
+        poster_url = (info.get('poster', '')
+                      or "https://via.placeholder.com/150")
+
         movie_html = f"""
         <li>
             <div class="movie">
-                <div class="movie-poster"></div>
+                <div class="movie-poster">
+                    <img src="{poster_url}" alt="{title} poster">
+                </div>
                 <div class="movie-title">{title}</div>
                 <div class="movie-year">{info['year']}</div>
                 <div class="movie-rating">Rating: {info['rating']}</div>
@@ -321,9 +326,10 @@ def generate_website():
 
     # Save as index.html
     try:
-        with open("_static/index.htms", "w", encoding="utf-8") as output_file:
+        with (open("_static/index.html", "w", encoding="utf-8")
+              as output_file):
             output_file.write(final_html)
-        print(f"{Fore.GREEN}Website was generated successfully."
+        print(f"{Fore.CYAN}Website was generated successfully."
               f"{Style.RESET_ALL}")
     except Exception as e:
         print(f"{Fore.RED}Failed to write index.html: {e}"
