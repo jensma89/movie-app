@@ -6,6 +6,8 @@ This file is handling the database options.
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import IntegrityError
 from movie_api import fetch_movie_by_title as fetch_movie
+from requests.exceptions import RequestException
+from colorama import Fore, Style
 
 # Define the database URL
 DB_URL = "sqlite:///movies.db"
@@ -44,8 +46,16 @@ def list_movies():
 
 def add_movie(title):
     """Add a new movie from API to the database."""
-    data = fetch_movie(title)
+    try:
+        data = fetch_movie(title)
+    except RequestException as e:
+        print(f"{Fore.RED}Network error "
+              f"while fetching movie: {e}{Style.RESET_ALL}")
+        return
+
     if not data:    # Error movie not found
+        print(f"{Fore.RED}Movie '{title}' "
+              f"not found in the database.{Style.RESET_ALL}")
         return
 
     year = data.get("Year", "Unknown")
