@@ -118,7 +118,8 @@ def prompt_update_movie():
 def calculate_average_rating(movies):
     """Calculate the average rating of movie data."""
     try:
-        ratings = [movie['rating'] for movie in movies]
+        ratings = [details['rating']
+                   for _, details in movies.items()]
         return statistics.mean(ratings)
     except statistics.StatisticsError:
         print(f"{Fore.RED}No ratings available to calculate average."
@@ -129,7 +130,8 @@ def calculate_average_rating(movies):
 def calculate_median_rating(movies):
     """Calculate the median rating of movie data."""
     try:
-        ratings = [movie['rating'] for movie in movies]
+        ratings = [details['rating']
+                   for _, details in movies.items()]
         return statistics.median(ratings)
     except statistics.StatisticsError:
         print(f"{Fore.RED}No ratings available to calculate median."
@@ -142,8 +144,10 @@ def get_best_movies(movies):
     try:
         if not movies:
             return [], None
-        max_rating = max(movie['rating'] for movie in movies)
-        best = [movie['title'] for movie in movies if movie['rating'] == max_rating]
+        max_rating = max(details['rating']
+                         for details in movies.values())
+        best = [title for title, details in movies.items()
+                if details['rating'] == max_rating]
         return best, max_rating
     except (KeyError, ValueError, TypeError):
         print(f"{Fore.RED}No ratings available to determine best movies."
@@ -156,9 +160,10 @@ def get_worst_movies(movies):
     try:
         if not movies:
             return [], None
-        min_rating = min(movie['rating'] for movie in movies)
-        worst = [movie['title'] for movie in movies
-                 if movie['rating'] == min_rating]
+        min_rating = min(details['rating']
+                         for details in movies.values())
+        worst = [title for title, details in movies.items()
+                 if details['rating'] == min_rating]
         return worst, min_rating
     except (KeyError, ValueError, TypeError):
         print(f"{Fore.RED}No ratings available to determine worst movies."
@@ -193,13 +198,17 @@ def get_movie_stats():
 
 
 def get_random_movie():
-    """Pick a random movie from the movie storage"""
+    """Pick a random movie from the movie storage."""
     movies = storage.list_movies()
-    movie = random.choice(movies)
-    title = movie['title']
-    rating = movie['rating']
-    year = movie['year']
-    print(f"{Fore.CYAN}Your movie tonight: {title}({year}), "
+    if not movies:
+        print(f"{Fore.RED}No movies available.{Style.RESET_ALL}")
+        return
+
+    title, details = random.choice(list(movies.items()))
+    rating = details['rating']
+    year = details['year']
+
+    print(f"{Fore.CYAN}Your movie tonight: {title} ({year}), "
           f"it's rated {rating}{Style.RESET_ALL}")
 
     input(f"{Fore.LIGHTGREEN_EX}\nPress Enter to continue{Style.RESET_ALL}")
