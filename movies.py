@@ -7,7 +7,7 @@ from the movie_storage module.
 import sys
 import movie_logic as ml
 from colorama import Fore, Style
-import movie_storage_sql as storage
+
 
 # colors (colorama):
 # Title & Goodbye = YELLOW
@@ -42,32 +42,30 @@ def main():
 
     while True:
         show_menu()
-        user_choice = input(f"{Fore.LIGHTGREEN_EX}"
+        user_option = input(f"{Fore.LIGHTGREEN_EX}"
                             f"Enter choice (1-10): {Style.RESET_ALL}")
         print()
 
 
-        if user_choice == "0":
+        if user_option == "0":
             print(f"{Fore.YELLOW}\nBye!{Style.RESET_ALL}")
             sys.exit()
-        elif user_choice == "1":
+        elif user_option == "1":
             ml.get_movie_list()
-        elif user_choice == "2":
+        elif user_option == "2":
             ml.prompt_add_movie()
-        elif user_choice == "3":
+        elif user_option == "3":
             ml.prompt_delete_movie()
-        elif user_choice == "4":
+        elif user_option == "4":
             ml.prompt_update_movie()
-        elif user_choice == "5":
+        elif user_option == "5":
             ml.get_movie_stats()
-        elif user_choice == "6":
+        elif user_option == "6":
             ml.get_random_movie()
-        elif user_choice == "7":
+        elif user_option == "7":
             ml.search_movie()
-        elif user_choice == "8":
+        elif user_option == "8":
             ml.sort_movies_by_rank()
-        elif user_choice == "9":
-            pass
         else:
             print(f"{Fore.RED}\nInvalid input, "
                   f"please try again.{Style.RESET_ALL}")

@@ -6,7 +6,6 @@ and handle calls from movie.py and movie_storage.py.
 """
 import random
 import statistics
-import matplotlib.pyplot as plt
 from rapidfuzz import process, fuzz
 from colorama import Fore, Style
 import movie_storage_sql as storage
@@ -16,6 +15,7 @@ import movie_storage_sql as storage
 # Ask for user input = LIGHTGREEN_EX
 # Error or info output = RED
 # Results = CYAN
+
 
 
 def get_movie_list():
@@ -157,7 +157,8 @@ def get_worst_movies(movies):
         if not movies:
             return [], None
         min_rating = min(movie['rating'] for movie in movies)
-        worst = [movie['title'] for movie in movies if movie['rating'] == min_rating]
+        worst = [movie['title'] for movie in movies
+                 if movie['rating'] == min_rating]
         return worst, min_rating
     except (KeyError, ValueError, TypeError):
         print(f"{Fore.RED}No ratings available to determine worst movies."
@@ -166,7 +167,6 @@ def get_worst_movies(movies):
 
 
 def print_movie_stats(movies):
-
     """Call the functions to calculate and display it."""
     average = calculate_average_rating(movies)
     median = calculate_median_rating(movies)
@@ -188,13 +188,13 @@ def print_movie_stats(movies):
 
 def get_movie_stats():
     """Fetch movies and show statistics."""
-    movies = get_movies()
+    movies = storage.list_movies()
     print_movie_stats(movies)
 
 
 def get_random_movie():
     """Pick a random movie from the movie storage"""
-    movies = get_movies()
+    movies = storage.list_movies()
     movie = random.choice(movies)
     title = movie['title']
     rating = movie['rating']
@@ -210,7 +210,7 @@ def search_movie():
     with similar results. With the rapidfuzz module
     you can adjust the finding results.
     Print out similar results."""
-    movies = get_movies()
+    movies = storage.list_movies()
     search_input = input(f"{Fore.LIGHTGREEN_EX}Enter a part of a movie name:"
                          f" {Style.RESET_ALL}").strip().lower()
     if not search_input:
@@ -253,7 +253,7 @@ def search_movie():
 def sort_movies_by_rank():
     """Sorted the movies by rating,
     reverse it for descending output from storage module"""
-    movies = get_movies()
+    movies = storage.list_movies()
     sorted_movies = sorted(movies, key=lambda movie: movie['rating'],
                            reverse=True)
 

@@ -90,7 +90,7 @@ def delete_movie(title):
     with engine.begin() as connection:
         result = connection.execute(
             text("DELETE FROM movies "
-                 "WHERE title = :title"),
+                 "WHERE LOWER(title) = LOWER(:title)"),
             {"title": title}
         )
 
@@ -99,13 +99,15 @@ def delete_movie(title):
         else:
             print(f"Movie '{title}' not found.")
 
+        return result.rowcount > 0
+
 
 def update_movie(title, rating):
     """Update a movie's rating in the database."""
     with engine.begin() as connection:
         result = connection.execute(
             text("UPDATE movies SET rating = :rating "
-                 "WHERE title = :title"),
+                 "WHERE LOWER(title) = LOWER(:title)"),
             {"title": title, "rating": rating}
         )
 
