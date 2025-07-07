@@ -8,7 +8,7 @@ import random
 import statistics
 from rapidfuzz import process, fuzz
 from colorama import Fore, Style
-import movie_storage_sql as storage
+from movie_storage import movie_storage_sql as storage
 
 
 # colors (colorama):
@@ -291,7 +291,7 @@ def generate_website():
 
     # Read template file
     try:
-        with (open("_static/index_template.html", "r", encoding="utf-8")
+        with (open("../_static/index_template.html", "r", encoding="utf-8")
               as template_file):
             html_template = template_file.read()
     except FileNotFoundError:
@@ -326,7 +326,7 @@ def generate_website():
 
     # Save as index.html
     try:
-        with (open("_static/index.html", "w", encoding="utf-8")
+        with (open("../_static/index.html", "w", encoding="utf-8")
               as output_file):
             output_file.write(final_html)
         print(f"{Fore.CYAN}Website was generated successfully."

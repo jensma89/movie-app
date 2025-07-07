@@ -5,12 +5,12 @@ This file is handling the database options.
 
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import IntegrityError
-from movie_api import fetch_movie_by_title as fetch_movie
+from core.movie_api import fetch_movie_by_title as fetch_movie
 from requests.exceptions import RequestException
 from colorama import Fore, Style
 
 # Define the database URL
-DB_URL = "sqlite:///movies.db"
+DB_URL = "sqlite:///data/movies.db"
 
 # Create the engine
 engine = create_engine(DB_URL, echo=True)

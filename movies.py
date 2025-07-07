@@ -5,7 +5,7 @@ This module is a Movie App to ask user for input and will handle date
 from the movie_storage module.
 """
 import sys
-import movie_logic as ml
+from core import movie_logic as ml
 from colorama import Fore, Style
 
 
