@@ -29,7 +29,8 @@ def get_movie_list():
         print(f"{Fore.CYAN}Title: {title}, "
               f"rating: {rating}, "
               f"year: {year}{Style.RESET_ALL}")
-    input(f"{Fore.LIGHTGREEN_EX}\nPress Enter to continue{Style.RESET_ALL}")
+    input(f"{Fore.LIGHTGREEN_EX}\nPress Enter to continue"
+          f"{Style.RESET_ALL}")
     print()
 
 
@@ -48,11 +49,13 @@ def prompt_add_movie():
     for movie in movies:
         if (isinstance(movie, dict)
                 and movie.get('title', '').lower() == title.lower()):
-            print(f"{Fore.RED}Movie already exists.{Style.RESET_ALL}")
+            print(f"{Fore.RED}Movie already exists."
+                  f"{Style.RESET_ALL}")
             return
 
     storage.add_movie(title)
-    print(f"{Fore.CYAN}Movie successfully added{Style.RESET_ALL}")
+    print(f"{Fore.CYAN}Movie successfully added"
+          f"{Style.RESET_ALL}")
 
     input(f"{Fore.LIGHTGREEN_EX}\nPress Enter to continue"
           f"{Style.RESET_ALL}")
@@ -77,7 +80,8 @@ def prompt_delete_movie():
         print(f"{Fore.RED}Movie {title} doesn't exist!"
               f"{Style.RESET_ALL}")
 
-    input(f"{Fore.LIGHTGREEN_EX}\nPress Enter to continue{Style.RESET_ALL}")
+    input(f"{Fore.LIGHTGREEN_EX}\nPress Enter to continue"
+          f"{Style.RESET_ALL}")
 
 
 def prompt_update_movie():
@@ -96,7 +100,8 @@ def prompt_update_movie():
                              f"{Style.RESET_ALL}"))
         if not (0 <= rating <= 10):
             print(f"{Fore.RED}Rating {rating} "
-                  f"is invalid! Number must be between 0 and 10.{Style.RESET_ALL}")
+                  f"is invalid! Number must be between 0 and 10."
+                  f"{Style.RESET_ALL}")
             return
     except ValueError:
         print(f"{Fore.RED}Invalid input! "
@@ -112,7 +117,8 @@ def prompt_update_movie():
         print(f"{Fore.RED}Movie {title} doesn't exist!"
               f"{Style.RESET_ALL}")
 
-    input(f"{Fore.LIGHTGREEN_EX}\nPress Enter to continue{Style.RESET_ALL}")
+    input(f"{Fore.LIGHTGREEN_EX}\nPress Enter to continue"
+          f"{Style.RESET_ALL}")
 
 
 def calculate_average_rating(movies):
@@ -186,9 +192,11 @@ def print_movie_stats(movies):
         print(f"Best movie(s): {title}, {max_rating}")
 
     for title in worst_movies:
-        print(f"Worst movie(s): {title}, {min_rating}{Style.RESET_ALL}")
+        print(f"Worst movie(s): {title}, {min_rating}"
+              f"{Style.RESET_ALL}")
 
-    input(f"{Fore.LIGHTGREEN_EX}\nPress Enter to continue{Style.RESET_ALL}")
+    input(f"{Fore.LIGHTGREEN_EX}\nPress Enter to continue"
+          f"{Style.RESET_ALL}")
 
 
 def get_movie_stats():
@@ -211,14 +219,12 @@ def get_random_movie():
     print(f"{Fore.CYAN}Your movie tonight: {title} ({year}), "
           f"it's rated {rating}{Style.RESET_ALL}")
 
-    input(f"{Fore.LIGHTGREEN_EX}\nPress Enter to continue{Style.RESET_ALL}")
+    input(f"{Fore.LIGHTGREEN_EX}\nPress Enter to continue"
+          f"{Style.RESET_ALL}")
 
 
 def search_movie():
-    """This function compare the input from user
-    with similar results. With the rapidfuzz module
-    you can adjust the finding results.
-    Print out similar results."""
+    """Search movies by partial title, include fuzzy matching."""
     movies = storage.list_movies()
     search_input = input(f"{Fore.LIGHTGREEN_EX}Enter a part of a movie name:"
                          f" {Style.RESET_ALL}").strip().lower()
@@ -229,45 +235,50 @@ def search_movie():
 
     found = False
 
-    for movie in movies: # loop to find movies
-        title = movie['title']
-        rating = movie['rating']
-        year = movie['year']
+    for title, details in movies.items():
+        rating = details['rating']
+        year = details['year']
         if search_input in title.lower():
-            print(f"{Fore.CYAN}The movie {title}({year}) "
+            print(f"{Fore.CYAN}The movie {title} ({year}) "
                   f"with rating {rating}{Style.RESET_ALL}")
             found = True
 
     if not found:
         print(f"{Fore.RED}\nNo movie found!{Style.RESET_ALL}")
 
-        # Adjusting for sensitivity by finding results
-        movie_titles = [movie['title'] for movie in movies]
-        matches = process.extract(search_input,
-                                  movie_titles,
-                                  scorer=fuzz.ratio,
-                                  limit=3)
-        threshhold_sensitive = 30  # Adjust sensitivity for results
-        similar_movies = [match for match, score,_ in matches if score >= threshhold_sensitive]
+        # Fuzzy matching fallback
+        movie_titles = list(movies.keys())
+        matches = process.extract(search_input, movie_titles,
+                                  scorer=fuzz.ratio, limit=3)
+        threshold_sensitive = 30
+        similar_movies = [match for match, score, _ in matches
+                          if score >= threshold_sensitive]
 
         if similar_movies:
             for title in similar_movies:
-                print(f"{Fore.CYAN}Did you mean: {title}{Style.RESET_ALL}")
+                print(f"{Fore.CYAN}Did you mean: {title}?"
+                      f"{Style.RESET_ALL}")
         else:
-            print(f"{Fore.RED}No similar movies found!{Style.RESET_ALL}")
+            print(f"{Fore.RED}No similar movies found!"
+                  f"{Style.RESET_ALL}")
 
-    input(f"{Fore.LIGHTGREEN_EX}\nPress Enter to continue{Style.RESET_ALL}")
+    input(f"{Fore.LIGHTGREEN_EX}\nPress Enter to continue"
+          f"{Style.RESET_ALL}")
 
 
 def sort_movies_by_rank():
     """Sorted the movies by rating,
     reverse it for descending output from storage module"""
     movies = storage.list_movies()
-    sorted_movies = sorted(movies, key=lambda movie: movie['rating'],
-                           reverse=True)
+    sorted_movies = sorted(
+        movies.items(),
+        key=lambda item: item[1]['rating'],
+        reverse=True
+    )
 
-    for movie in sorted_movies:
-        print(f"{Fore.CYAN}{movie['title']}: "
-              f"{movie['rating']}{Style.RESET_ALL}")
+    for title, details in sorted_movies:
+        print(f"{Fore.CYAN}{title}: "
+              f"{details['rating']}{Style.RESET_ALL}")
 
-    input(f"{Fore.LIGHTGREEN_EX}\nPress Enter to continue{Style.RESET_ALL}")
+    input(f"{Fore.LIGHTGREEN_EX}\nPress Enter to continue"
+          f"{Style.RESET_ALL}")

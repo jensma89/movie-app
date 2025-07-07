@@ -43,7 +43,8 @@ def main():
     while True:
         show_menu()
         user_option = input(f"{Fore.LIGHTGREEN_EX}"
-                            f"Enter choice (1-10): {Style.RESET_ALL}")
+                            f"Enter choice (1-10): "
+                            f"{Style.RESET_ALL}")
         print()
 
 
