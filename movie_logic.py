@@ -9,7 +9,7 @@ import statistics
 from rapidfuzz import process, fuzz
 from colorama import Fore, Style
 import movie_storage_sql as storage
-import os
+
 
 # colors (colorama):
 # Title & Goodbye = YELLOW

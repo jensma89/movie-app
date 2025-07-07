@@ -1,0 +1,6 @@
+colorama
+statistics
+rapidfuzz
+sqlalchemy
+dotenv
+requests
