@@ -68,7 +68,7 @@ def main():
         elif user_option == "8":
             ml.sort_movies_by_rank()
         elif user_option == "9":
-            pass
+            ml.generate_website()
         else:
             print(f"{Fore.RED}\nInvalid input, "
                   f"please try again.{Style.RESET_ALL}")

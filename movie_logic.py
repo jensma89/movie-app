@@ -9,6 +9,7 @@ import statistics
 from rapidfuzz import process, fuzz
 from colorama import Fore, Style
 import movie_storage_sql as storage
+import os
 
 # colors (colorama):
 # Title & Goodbye = YELLOW
@@ -279,6 +280,54 @@ def sort_movies_by_rank():
     for title, details in sorted_movies:
         print(f"{Fore.CYAN}{title}: "
               f"{details['rating']}{Style.RESET_ALL}")
+
+    input(f"{Fore.LIGHTGREEN_EX}\nPress Enter to continue"
+          f"{Style.RESET_ALL}")
+
+
+def generate_website():
+    """Generate a website template."""
+    movies = storage.list_movies()
+
+    # Read template file
+    try:
+        with (open("_static/index_template.html", "r", encoding="utf-8"))
+            as template_file:
+            html_template = template_file.read()
+    except FileNotFoundError:
+        print(f"{Fore.RED}Template file not found! {Style.RESET_ALL}")
+        return
+
+    # Create movie-grid
+    movie_grid_html = ""
+    for title, info in movies.items():
+        movie_html = f"""
+        <li>
+            <div class="movie">
+                <div class="movie-poster"></div>
+                <div class="movie-title">{title}</div>
+                <div class="movie-year">{info['year']}</div>
+                <div class="movie-rating">Rating: {info['rating']}</div>
+            </div>
+        </li>
+        """
+        movie_grid_html += movie_html
+
+    # Replace placeholder
+    final_html = html_template.replace("__TEMPLATE_TITLE__",
+                                       "My movie collection")
+    final_html = final_html.replace("__TEMPLATE_MOVIE_GRID__",
+                                    movie_grid_html)
+
+    # Save as index.html
+    try:
+        with open("_static/index.htms", "w", encoding="utf-8") as output_file:
+            output_file.write(final_html)
+        print(f"{Fore.GREEN}Website was generated successfully."
+              f"{Style.RESET_ALL}")
+    except Exception as e:
+        print(f"{Fore.RED}Failed to write index.html: {e}"
+              f"{Style.RESET_ALL}")
 
     input(f"{Fore.LIGHTGREEN_EX}\nPress Enter to continue"
           f"{Style.RESET_ALL}")
