@@ -1,0 +1,4 @@
+../movie_project/.venv/
+__pycache__/
+../MOVE/.env
+../MOVE/data/movies.db
